@@ -1,6 +1,6 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { createClient } from 'redis'
-import { ProvideEnum } from 'src/config/provide';
+import { ProvideEnum } from '@/common/enums/provide.enum';
 import { ConfigService } from '@nestjs/config';
 
 

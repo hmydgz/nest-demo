@@ -2,7 +2,7 @@ import { RedisClient } from 'src/typings';
 import { User } from '@app/db/schemas';
 import { Inject, Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { ProvideEnum } from 'src/config/provide';
+import { ProvideEnum } from '@/common/enums/provide.enum';
 import { RedisKeys } from '@app/redis/keys';
 
 @Injectable()

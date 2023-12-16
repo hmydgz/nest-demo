@@ -1,11 +1,10 @@
 import { CanActivate, ExecutionContext, Injectable, SetMetadata, UseGuards, applyDecorators } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthService } from 'src/modules/auth/auth.service';
-import { PermissionCodeEnum } from 'src/config/permission';
+import { PermissionCodeEnum } from '@/common/enums/permission.enum';
 import { getGuardReqRes } from '../utils';
 import { TokenGuard } from '../token/token.guard';
-
-const AuthCodeMetadataKey = 'AUTH_CODE'
+import { MetadataKeyEnum } from '@/common/enums/metadata-key.enum';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -16,7 +15,7 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const { req, res } = getGuardReqRes(context)
     const authCode = this.reflector.getAllAndOverride<PermissionCodeEnum>(
-      AuthCodeMetadataKey,
+      MetadataKeyEnum.AUTH_CODE,
       [context.getHandler(), context.getClass()],
     )
     if (!req.user.roleId) {
@@ -32,7 +31,7 @@ export class AuthGuard implements CanActivate {
 
 export function UseAuth(code: PermissionCodeEnum | PermissionCodeEnum[]) {
   return applyDecorators(
-    SetMetadata(AuthCodeMetadataKey, code),
+    SetMetadata(MetadataKeyEnum.AUTH_CODE, code),
     UseGuards(TokenGuard, AuthGuard)
   )
 }

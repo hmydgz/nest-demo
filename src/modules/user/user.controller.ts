@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { UserReq } from 'src/typings';
 import { UserService } from './user.service';
-import { PermissionCodeEnum } from 'src/config/permission';
+import { PermissionCodeEnum } from '@/common/enums/permission.enum';
 import { TokenGuard } from '@/common/guard/token/token.guard';
 import { UseAuth } from '@/common/guard/auth/auth.guard';
 
