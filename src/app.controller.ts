@@ -1,12 +1,12 @@
-import { AppService } from './app.service';
+import { AppService } from '@/app.service';
 import { Controller, Get, Inject, Param, Post, UseGuards } from '@nestjs/common';
-import { TokenGuard } from './guard/token/token.guard';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { User } from '@app/db/schemas';
-import { UseAuth } from './guard/auth/auth.guard';
-import { PermissionCodeEnum } from './config/permission';
-import { ProvideEnum } from './config/provide';
-import { RedisClient } from './typings';
+import { PermissionCodeEnum } from '@/config/permission';
+import { ProvideEnum } from '@/config/provide';
+import { RedisClient } from '@/typings';
+import { TokenGuard } from '@/common/guard/token/token.guard';
+import { UseAuth } from '@/common/guard/auth/auth.guard';
 
 @Controller()
 export class AppController {

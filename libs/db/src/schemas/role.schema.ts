@@ -2,7 +2,7 @@ import { Prop } from "@typegoose/typegoose";
 import { TimeStamps } from "@typegoose/typegoose/lib/defaultClasses";
 import { IsArray, IsNotEmpty, IsString, Length } from "class-validator";
 import { PermissionCodeEnum } from "src/config/permission";
-import { CustomValidate } from "src/decorator/custom-validate.decorator";
+import { CustomValidate } from "src/common/decorator/custom-validate.decorator";
 
 const PermissionCodeEnumValueArr = Object.values(PermissionCodeEnum)
 

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { TokenGuard } from 'src/guard/token/token.guard';
 import { RoleService } from './role.service';
 import { CreateRoleDTO } from './dto/create.dto';
+import { TokenGuard } from '@/common/guard/token/token.guard';
 
 @UseGuards(TokenGuard)
 @Controller('role')

@@ -9,7 +9,7 @@ import { ProvideEnum } from 'src/config/provide';
 import { PermissionCodeEnum } from 'src/config/permission';
 import { RedisKeys } from '@app/redis/keys';
 import { JWT_SECRET_ENV_KEY } from 'src/config/keys';
-import { useRedisCache } from 'src/utils';
+import { useRedisCache } from 'src/common/utils';
 import { RedisClient } from 'src/typings';
 import { RoleService } from '../role/role.service';
 
