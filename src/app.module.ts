@@ -11,6 +11,8 @@ import { RoleModule } from './modules/role/role.module';
 import { RedisModule } from '@app/redis';
 import { JWT_SECRET_ENV_KEY } from './config/keys';
 import { NewsModule } from './modules/news/news.module';
+import { APP_GUARD } from '@nestjs/core';
+import { HeaderGuard } from './common/guard/header/header.guard';
 
 @Global()
 @Module({
@@ -42,6 +44,12 @@ import { NewsModule } from './modules/news/news.module';
     NewsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: HeaderGuard,
+    }
+  ],
 })
 export class AppModule {}
