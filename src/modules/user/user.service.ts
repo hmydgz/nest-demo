@@ -21,7 +21,7 @@ export class UserService {
     }
   }
 
-  async findOne(where: Partial<Omit<User, 'password'>> = {}) {
+  async findOneAndPwd(where: Partial<Omit<User, 'password'>> = {}) {
     const _where = Object.entries(where).map(([key, value]) => ({ [key]: value }))
     return await this.userModel.findOne({ $or: _where }).select('+password')
   }

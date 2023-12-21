@@ -8,31 +8,34 @@ import { IsString, Length, MaxLength } from 'class-validator'
  */
 @modelOptions({
   schemaOptions: {
+    id: false,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
   }
 })
 export class User extends TimeStamps {
+  @Prop({ select: false })
+  __v?: number;
+
   /**
    * 用户名
    */
-  @MaxLength(64)
-  @IsString()
+  @MaxLength(64, { message: '用户名长度不能超过64' })
+  @IsString({ message: '用户名必须是字符串' })
   @Prop()
   username: string
 
   /**
    * 密码
    */
-  @Length(6, 16)
-  @IsString()
+  @Length(6, 16, { message: '密码长度必须在6-16之间' })
+  @IsString({ message: '密码必须是字符串' })
   @Prop({ select: false })
   password: string
 
   /**
    * 角色ID
    */
-  @IsString()
   @Prop()
   roleId?: mongoose.Types.ObjectId
 
