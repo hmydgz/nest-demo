@@ -12,6 +12,7 @@ import { JWT_SECRET_ENV_KEY } from 'src/config/keys';
 import { useRedisCache } from 'src/common/utils';
 import { RedisClient } from 'src/typings';
 import { RoleService } from '../role/role.service';
+import { CustomException } from '@/common/exception/custom.exception';
 
 @Injectable()
 export class AuthService {
@@ -57,10 +58,8 @@ export class AuthService {
   }
 
   async login(body: LoginDTO) {
-    if (!body.username) throw new HttpException('请输入合法的用户名', HttpStatus.BAD_REQUEST)
-    if (!body.password || body.password.length > 16 || body.password.length < 6) throw new HttpException('请输入合法的密码', HttpStatus.BAD_REQUEST)
     const user = await this.userService.findOneAndPwd({ username: body.username })
-    if (!user) throw new HttpException('用户名不存在', HttpStatus.BAD_REQUEST)
+    if (!user) throw new CustomException('用户名不存在', 500001)
     const isMatch = await bcrypt.compare(body.password, user.password)
     if (!isMatch) throw new HttpException('密码错误', HttpStatus.BAD_REQUEST)
     const token = await this.jwtService.signAsync({ id: user.id }, { secret: this.config.get(JWT_SECRET_ENV_KEY) })
