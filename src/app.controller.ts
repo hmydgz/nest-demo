@@ -37,13 +37,17 @@ export class AppController {
     return 'ok'
   }
 
-
-
   @UseGuards(TokenGuard)
   @Post('clear/redis')
   async clearRedis() {
     const keys = await this.redisClient.keys('*')
     await this.redisClient.del(keys)
+    return keys
+  }
+
+  @Get('redis/keys')
+  async getRedisKeys() {
+    const keys = await this.redisClient.keys('*')
     return keys
   }
 

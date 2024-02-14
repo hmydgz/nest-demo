@@ -13,10 +13,10 @@ import { useRedisCache } from 'src/common/utils';
 import { RedisClient } from 'src/typings';
 import { RoleService } from '../role/role.service';
 import { CustomException } from '@/common/exception/custom.exception';
+// import { logger } from '@/common/logger';
 
 @Injectable()
 export class AuthService {
-
   private _jwtSecret: string
   private get jwtSecret() { // 缓存
     if (this._jwtSecret) return this._jwtSecret
@@ -29,7 +29,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
     private readonly roleService: RoleService,
-    @Inject(ProvideEnum.REDIS_CLIENT) private readonly redisClient: RedisClient
+    @Inject(ProvideEnum.REDIS_CLIENT) private readonly redisClient: RedisClient,
   ) {}
   async checkToken(token?: string) {
     if (!token) return null
@@ -58,14 +58,18 @@ export class AuthService {
   }
 
   async login(body: LoginDTO) {
-    const user = await this.userService.findOneAndPwd({ username: body.username })
+    const user = await useRedisCache(
+      this.redisClient,
+      RedisKeys.userByName(body.username),
+      () => this.userService.findOneAndPwd({ username: body.username })
+    )
+    // const user = await this.userService.findOneAndPwd({ username: body.username })
     if (!user) throw new CustomException('用户名不存在', 500001)
     const isMatch = await bcrypt.compare(body.password, user.password)
-    if (!isMatch) throw new HttpException('密码错误', HttpStatus.BAD_REQUEST)
-    const token = await this.jwtService.signAsync({ id: user.id }, { secret: this.config.get(JWT_SECRET_ENV_KEY) })
-    const _user = user.toJSON()
-    delete _user.password
-    return { token, user: _user }
+    if (!isMatch) throw new CustomException('密码错误', 500002)
+    const token = await this.jwtService.signAsync({ id: user._id }, { secret: this.jwtSecret })
+    delete user.password
+    return { token, user }
   }
 
   async register({ username, password }: RegisterDTO) {
@@ -74,11 +78,7 @@ export class AuthService {
     const user = await this.userService.findOneAndPwd({ username })
     if (user) throw new HttpException('用户名已存在', HttpStatus.BAD_REQUEST)
 
-    const hash = await bcrypt.hash(password, 10)
-    const data = {
-      username,
-      password: hash
-    }
+    const data = { username, password: await bcrypt.hash(password, 10) }
     const res = await this.userService.create(data)
     return res
   }

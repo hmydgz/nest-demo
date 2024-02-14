@@ -22,7 +22,7 @@ export class AuthGuard implements CanActivate {
       res.status(403).send({ code: 403, message: '无权访问' })
       return false
     }
-    const result = await this.authService.checkPermissionCode((req.user.roleId ?? '').toString(), authCode)
+    const result = await this.authService.checkPermissionCode(req.user.roleId.toString(), authCode)
     if (result) return true
     res.status(403).send({ code: 403, message: '无权访问' })
     return false

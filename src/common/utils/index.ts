@@ -9,9 +9,10 @@ export async function useRedisCache<T = any>(
   if (hasCache) {
     const cache = await redisClient.get(cacheKey)
     try {
-      return JSON.parse(cache)
+      const res = JSON.parse(cache) as T
+      return res
     } catch (error) {
-      return cache
+      return cache as T
     }
   }
 
