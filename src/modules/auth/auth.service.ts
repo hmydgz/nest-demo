@@ -13,7 +13,7 @@ import { useRedisCache } from 'src/common/utils';
 import { RedisClient } from 'src/typings';
 import { RoleService } from '../role/role.service';
 import { CustomException } from '@/common/exception/custom.exception';
-// import { logger } from '@/common/logger';
+import { LogCtx } from '@/common/decorator/logger.decorator';
 
 @Injectable()
 export class AuthService {
@@ -57,12 +57,13 @@ export class AuthService {
     return await this.redisClient.sIsMember(key, code)
   }
 
-  async login(body: LoginDTO) {
+  async login(body: LoginDTO, ctx: LogCtx) {
     const user = await useRedisCache(
       this.redisClient,
       RedisKeys.userByName(body.username),
       () => this.userService.findOneAndPwd({ username: body.username })
     )
+    ctx.logger.info(`test`)
     // const user = await this.userService.findOneAndPwd({ username: body.username })
     if (!user) throw new CustomException('用户名不存在', 500001)
     const isMatch = await bcrypt.compare(body.password, user.password)

@@ -1,9 +1,8 @@
-import { Body, Controller, Post, Query } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
-import { Logger } from '@/common/decorator/logger.decorator';
-import { logger } from '@/common/logger';
+import { LogCtx, Logger, LoggerCtx } from '@/common/decorator/logger.decorator';
 
 @Logger()
 @Controller('auth')
@@ -13,8 +12,8 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  async login(@Body() body: LoginDTO, @Query() query: any) {
-    return await this.authService.login(body)
+  async login(@Body() body: LoginDTO, @LoggerCtx() ctx: LogCtx) {
+    return await this.authService.login(body, ctx)
   }
 
   @Post('register')
